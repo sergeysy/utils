@@ -26,3 +26,4 @@ UI_DIR = "$$DESTDIR/.u"
 # source code encoding
 QMAKE_CXXFLAGS += -finput-charset="UTF-8"
 QMAKE_CXXFLAGS += -Werror
+QMAKE_CXXFLAGS += -Wall
