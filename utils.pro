@@ -7,9 +7,12 @@ INCLUDEPATH += "$$_PRO_FILE_PWD_/include"
 
 TARGET = "$$LIBUTILS"
 
-HEADERS +=	include/logger.hpp
+HEADERS +=	include/logger.hpp \
+		include/formathelper.hpp \
+		include/enumdefinition.inl
 
-SOURCES +=      sources/logger.cpp
+SOURCES +=	sources/logger.cpp \
+		sources/formathelper.cpp
 
 CONFIG(debug, debug|release) {
     CONFIGURATION=debug
