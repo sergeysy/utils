@@ -21,10 +21,7 @@ CONFIG(debug, debug|release) {
 }
 DESTDIR = "$$ROOT_DIR/build/$$CONFIGURATION/$$TARGET"
 
-OBJECTS_DIR = "$$DESTDIR/.obj"
-MOC_DIR = "$$DESTDIR/.moc"
-RCC_DIR = "$$DESTDIR/.qrc"
-UI_DIR = "$$DESTDIR/.u"
+OBJECTS_DIR = \""$$DESTDIR/.obj\""
 
 # source code encoding
 QMAKE_CXXFLAGS += -finput-charset="UTF-8"
