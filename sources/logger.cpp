@@ -18,6 +18,6 @@ std::ostream& operator<<(std::ostream& os, const logger& /*dt*/)
     //auto now = std::chrono::system_clock::now();
     //auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
-    os << std::put_time(std::localtime(&in_time_t), "%X")<< "." << fractional_seconds << " [" << std::this_thread::get_id() << "] ";
+    os << std::put_time(std::localtime(&in_time_t), "%X")<< "." << std::setw(3) << std::setfill('0') << fractional_seconds << " [" << std::this_thread::get_id() << "] ";
     return os;
 }
