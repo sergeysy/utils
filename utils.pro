@@ -10,11 +10,14 @@ TARGET = "$$LIBUTILS"
 HEADERS +=	include/logger.hpp \
 		include/formathelper.hpp \
 		include/enumdefinition.inl \
-		include/crc.hpp
+		include/crc.hpp \
+		include/typedefines.hpp \
+		include/support.hpp
 
 SOURCES +=	sources/logger.cpp \
 		sources/formathelper.cpp \
-		sources/crc.cpp
+		sources/crc.cpp \
+		sources/support.cpp
 
 CONFIG(debug, debug|release) {
     CONFIGURATION=debug
