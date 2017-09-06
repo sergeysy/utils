@@ -16,7 +16,7 @@ std::string buf_to_str(const u08* buf, std::size_t len)
     return utils::support::buf_to_str(buf, len);
 }
 
-static bool operator<(log_level_t::EnumType left, log_level_t::EnumType right)
+/*static bool operator<(log_level_t::EnumType left, log_level_t::EnumType right)
 {
     static const log_level_t::EnumType idx[] =
     {
@@ -33,7 +33,7 @@ static bool operator<(log_level_t::EnumType left, log_level_t::EnumType right)
     const log_level_t::EnumType* idx_right    = std::find(&idx[0], &idx[idx_size], right);
 
     return *idx_left < *idx_right;
-}
+}*/
 
 
 void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* format, ...)

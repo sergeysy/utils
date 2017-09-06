@@ -56,15 +56,15 @@ static u16 CRC16_base(u16 start_value, const u08* buf, std::size_t len)
 }
 
 constexpr u16 CRC_INIT_VALUE_0xFFFF = 0xFFFF;
-u16 CCITT_FALSE(const u08* buf, std::size_t len)
+u16 CCITT_FALSE(const std::vector<u08>& buf)
 {
-    return CRC16_base(CRC_INIT_VALUE_0xFFFF, buf, len);
+    return CRC16_base(CRC_INIT_VALUE_0xFFFF, buf.data(), buf.size());
 }
 
 constexpr u16 CRC_INIT_VALUE_0x0000 = 0x0000;
-u16 XMODEM(const u08* buf, std::size_t len)
+u16 XMODEM(const std::vector<u08>& buf)
 {
-    return CRC16_base(CRC_INIT_VALUE_0x0000, buf, len);
+    return CRC16_base(CRC_INIT_VALUE_0x0000, buf.data(), buf.size());
 }
 
 } // end namespace crc16

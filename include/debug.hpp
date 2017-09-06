@@ -45,7 +45,7 @@ static const char EVENT_ENTER[]						= "enter";
 static const char EVENT_LEAVE[]						= "leave";
 
 void log_message(bool is_subsys_enabled, log_level_t lvl, const char* format, ...);
-
+#if defined (__unix__)
 #define LOG_MSG(is_enabled, lvl, fmt, args...)		debug::log_message(is_enabled, lvl, fmt, ##args)
 #define LOG_TRACE_MSG(is_enabled,	fmt, args...)	LOG_MSG(is_enabled, debug::LOG_LEVEL_TRACE,  fmt, ##args)
 #define LOG_DEBUG_MSG(is_enabled,	fmt, args...)	LOG_MSG(is_enabled, debug::LOG_LEVEL_DEBUG,  fmt, ##args)
@@ -58,6 +58,7 @@ void log_message(bool is_subsys_enabled, log_level_t lvl, const char* format, ..
 #define DEBUG_ENTER_FUNC(is_enabled)				LOG_FUNC(is_enabled, debug::EVENT_ENTER)
 #define DEBUG_LEAVE_FUNC(is_enabled)				LOG_FUNC(is_enabled, debug::EVENT_LEAVE)
 #define DEBUG_ASSERT(condition, fmt, args...)		{ if( !(condition) ) { LOG_DEBUG_MSG(true, "ASSERT! (" #condition ") " fmt, args); }}
+#endif //__unix__
 
 } // end namespace debug
 

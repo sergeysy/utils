@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <vector>
 #include <cstddef>
 
 typedef unsigned char   u08;
@@ -9,8 +10,8 @@ namespace utils {
 namespace crc {
 namespace crc16 {
 
-u16 CCITT_FALSE(const u08* buf, std::size_t len);
-u16 XMODEM(const u08* buf, std::size_t len);
+u16 CCITT_FALSE(const std::vector<u08>& buf);
+u16 XMODEM(const std::vector<u08>& buf);
 
 } // end namespace crc16
 } // end namespace crc
