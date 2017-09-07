@@ -2,9 +2,7 @@
 
 #include <vector>
 #include <cstddef>
-
-typedef unsigned char   u08;
-typedef unsigned short  u16;
+#include "typedefines.hpp"
 
 namespace utils {
 namespace crc {
