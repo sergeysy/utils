@@ -1,8 +1,5 @@
 ﻿#include "support.hpp"
 
-#include <iostream>
-#include <sstream>
-#include <iomanip>
 
 namespace utils {
 namespace support {
@@ -18,25 +15,25 @@ u08 bcd2dec(u08 ch)
     return (ch & 0x0F) + 10 * (ch >> 4);
 }
 
-template<typename TInputIter>
-std::string to_hex_str(TInputIter first, TInputIter last, bool use_uppercase/* = true*/, bool insert_spaces/* = false*/)
-{
-    std::ostringstream ss;
+//template<typename TInputIter>
+//std::string to_hex_str(TInputIter first, TInputIter last, bool use_uppercase/* = true*/, bool insert_spaces/* = false*/)
+//{
+//    std::ostringstream ss;
 
-    ss << std::hex << std::setfill('0');
+//    ss << std::hex << std::setfill('0');
 
-    if (use_uppercase)
-        ss << std::uppercase;
+//    if (use_uppercase)
+//        ss << std::uppercase;
 
-    while (first != last)
-    {
-        ss << std::setw(2) << static_cast<int>(*first++);
-        if (insert_spaces && (first != last))
-            ss << " ";
-    }
+//    while (first != last)
+//    {
+//        ss << std::setw(2) << static_cast<int>(*first++);
+//        if (insert_spaces && (first != last))
+//            ss << " ";
+//    }
 
-    return ss.str();
-}
+//    return ss.str();
+//}
 
 
 std::string buf_to_hex(const u08* buf, size_t len, bool uppercase /* = true */)

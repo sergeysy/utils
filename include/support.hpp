@@ -3,6 +3,8 @@
 #include "typedefines.hpp"
 #include <string>
 #include <iostream>
+#include <iomanip>
+
 
 namespace utils {
 namespace support {
@@ -17,7 +19,24 @@ u08 bcd2dec(u08 ch);
 
 
 template<typename TInputIter>
-std::string to_hex_str(TInputIter first, TInputIter last, bool use_uppercase = true, bool insert_spaces = false);
+std::string to_hex_str(TInputIter first, TInputIter last, bool use_uppercase/* = true*/, bool insert_spaces/* = false*/)
+{
+    std::ostringstream ss;
+
+    ss << std::hex << std::setfill('0');
+
+    if (use_uppercase)
+        ss << std::uppercase;
+
+    while (first != last)
+    {
+        ss << std::setw(2) << static_cast<int>(*first++);
+        if (insert_spaces && (first != last))
+            ss << ' ';
+    }
+
+    return ss.str();
+}
 
 std::string buf_to_hex(const u08* buf, std::size_t len, bool uppercase = true);
 

@@ -29,12 +29,11 @@ static bool operator<(log_level_t::EnumType left, log_level_t::EnumType right)
 
     constexpr std::size_t idx_size = sizeof(idx)/sizeof(idx[0]);
 
-    const log_level_t::EnumType* idx_left     = std::find(&idx[0], &idx[idx_size], left);
-    const log_level_t::EnumType* idx_right    = std::find(&idx[0], &idx[idx_size], right);
+    const log_level_t::EnumType* idx_left     = std::find(&idx[0], &idx[idx_size - 1], left);
+    const log_level_t::EnumType* idx_right    = std::find(&idx[0], &idx[idx_size - 1], right);
 
-    return *idx_left < *idx_right;
+    return idx_left < idx_right;
 }
-
 
 void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* format, ...)
 {
@@ -48,7 +47,7 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
 
     std::wstring lvl_name = log_level_t::ToString(lvl);
 
-    std::cerr << std::string(lvl_name.begin(), lvl_name.end()) << ' ' << msg << std::endl;
+    std::cerr << logger() << std::string(lvl_name.begin(), lvl_name.end()) << ' ' << msg << std::endl;
 }
 
 } // end namespace debug
