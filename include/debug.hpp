@@ -8,9 +8,12 @@
 #include <sstream>
 #include <iomanip>
 
+#include <boost/thread/mutex.hpp>
+
 #include "enumdefinition.inl"
 #include "typedefines.hpp"
 
+#include <fstream>
 
 namespace utils {
 
@@ -129,6 +132,24 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
 #define DEBUG_LEAVE_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_LEAVE)
 #define DEBUG_ASSERT(condition, fmt, args...)		{ if( !(condition) ) { LOG_DEBUG_MSG(true, "ASSERT! (" #condition ") " fmt, args); }}
 #endif //__unix__
+
+class log_writer
+{
+public:
+
+    static constexpr const char* MAINDIR = "/validator";
+    static constexpr const char* LOGS    = "/logs";
+
+    log_writer();
+    ~log_writer();
+
+    void push(std::string outstr);
+
+private:
+
+    boost::mutex  log_mutex_;
+    std::ofstream out_stream_;
+};
 
 } // end namespace debug
 
