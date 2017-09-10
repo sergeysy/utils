@@ -25,13 +25,6 @@ public:
         io_service_.post(call_strand_.wrap(handler));
     }
 
-//    template <typename CompletionHandler>
-//    BOOST_ASIO_INITFN_RESULT_TYPE(CompletionHandler, void ())
-//    post(BOOST_ASIO_MOVE_ARG(CompletionHandler) handler)
-//    {
-//        io_service_.post(call_strand_.wrap(handler));
-//    }
-
 private:
 
     boost::asio::io_service								io_service_;
@@ -39,10 +32,5 @@ private:
     boost::scoped_ptr<boost::asio::io_service::work>	workptr_;
     boost::thread_group									threads_;
 };
-
-//typedef boost::function<void(bool)> callback_type;
-
-//template<>
-//threading::post(callback_type handler);
 
 } // end namespace sys
