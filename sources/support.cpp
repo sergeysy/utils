@@ -45,7 +45,7 @@ std::string buf_to_str(const u08* buf, size_t len)
 {
     std::ostringstream ss;
 
-    ss << "[ " << len << " ]"
+    ss << "[ " << len << " ] "
        << "{ " << ((len > 0 && NULL != buf) ? buf_to_hex(buf, len, true) : std::string("< e m p t y >")) << " }";
 
     return ss.str();

@@ -8,17 +8,21 @@
 #include <sstream>
 #include <iomanip>
 
+#include <boost/thread/mutex.hpp>
+
 #include "enumdefinition.inl"
 #include "typedefines.hpp"
 
+#include <fstream>
 
-namespace utils {
+
 
 // Source 1: http://www.emoticode.net/c/an-example-log-function-using-different-log-levels-and-variadic-macros.html
 // Source 2: http://www.linuxforums.org/forum/programming-scripting/162867-logging-levels-c.html
 
 // http://stackoverflow.com/questions/1941307/c-debug-print-macros
 // http://ecloud.org/index.php?title=Debug_printf_macros_for_C/C%2B%2B
+
 
 #ifdef DEBUG_ON
 
@@ -29,11 +33,11 @@ namespace utils {
 #define		LOG_APP_ON			YES
 #endif
 
-#ifndef LOG_TICKET_ON
+#ifndef     LOG_TICKET_ON
 #define		LOG_TICKET_ON       YES
 #endif
 
-#ifndef LOG_READER_ON
+#ifndef     LOG_READER_ON
 #define		LOG_READER_ON		YES
 #endif
 
@@ -92,20 +96,23 @@ namespace utils {
 //#define LOG_GPS				NO
 //#define LOG_MFP				NO
 //#define LOG_SAM				NO
+#endif
+
+
+namespace utils {
+
+#ifdef DEBUG_ON
 
 namespace  debug {
 
-// 2017-09-01 10:47
-// Keep for compliance with older code
-// Change to utils::support::buf_to_str
-std::string buf_to_str(const u08* buf, std::size_t len);
+
 
 DECLARE_ENUM_5(log_level_t,
-     TRACE,     L"TRACE",
-     DEBUG,     L"DEBUG",
-     WARNING,   L"WARNING",
-     INFO,      L"INFO",
-     ERROR,     L"ERROR")
+               TRACE,     L"T",
+               DEBUG,     L"D",
+               WARNING,   L"W",
+               INFO,      L"I",
+               ERROR,     L"E")
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL log_level_t::TRACE
@@ -127,8 +134,26 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
 #define LOG_FUNC(is_enabled, e)						LOG_INFO_MSG(is_enabled, "< %s > %s", __PRETTY_FUNCTION__, e)
 #define DEBUG_ENTER_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_ENTER)
 #define DEBUG_LEAVE_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_LEAVE)
-#define DEBUG_ASSERT(condition, fmt, args...)		{ if( !(condition) ) { LOG_DEBUG_MSG(true, "ASSERT! (" #condition ") " fmt, args); }}
+#define DEBUG_ASSERT(is_enabled, condition, fmt, args...) LOG_ERROR_MSG((is_enabled) && !(condition), "ASSERT! (" #condition ") " fmt, ##args)
 #endif //__unix__
+
+class log_writer
+{
+public:
+
+    static constexpr const char* MAINDIR = "/validator";
+    static constexpr const char* LOGS    = "/logs";
+
+    log_writer();
+    ~log_writer();
+
+    void push(std::string outstr);
+
+private:
+
+    boost::mutex            log_mutex_;
+    std::ofstream           out_stream_;
+};
 
 } // end namespace debug
 
