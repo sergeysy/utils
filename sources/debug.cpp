@@ -65,7 +65,6 @@ log_writer::log_writer()
     oss << now << ".log";
     out_stream_.open((out_path/oss.str()).string().c_str(), std::ios::app);
 }
-
 log_writer::~log_writer()
 {
     if (out_stream_.is_open())
