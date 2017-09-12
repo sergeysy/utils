@@ -107,12 +107,12 @@ namespace  debug {
 
 
 
-DECLARE_ENUM_5(log_level_t,
-               TRACE,     L"T",
-               DEBUG,     L"D",
-               WARNING,   L"W",
-               INFO,      L"I",
-               ERROR,     L"E")
+	DECLARE_ENUM_5(log_level_t,
+	TRACE, L"T",
+		DEBUG, L"D",
+		WARNING, L"W",
+		INFO, L"I",
+		ERRORt, L"E");
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL log_level_t::TRACE
@@ -122,20 +122,20 @@ static const char EVENT_ENTER[]						= "enter";
 static const char EVENT_LEAVE[]						= "leave";
 
 void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* format, ...);
-#if defined (__unix__)
-#define LOG_MSG(is_enabled, lvl, fmt, args...)		utils::debug::log_message(is_enabled, lvl, fmt, ##args)
-#define LOG_TRACE_MSG(is_enabled,	fmt, args...)	LOG_MSG(is_enabled, utils::debug::log_level_t::TRACE,  fmt, ##args)
-#define LOG_DEBUG_MSG(is_enabled,	fmt, args...)	LOG_MSG(is_enabled, utils::debug::log_level_t::DEBUG,  fmt, ##args)
-#define LOG_WARNING_MSG(is_enabled, fmt, args...)	LOG_MSG(is_enabled, utils::debug::log_level_t::WARNING,fmt, ##args)
-#define LOG_INFO_MSG(is_enabled,	fmt, args...)	LOG_MSG(is_enabled, utils::debug::log_level_t::INFO,   fmt, ##args)
-#define LOG_ERROR_MSG(is_enabled,	fmt, args...)	LOG_MSG(is_enabled, utils::debug::log_level_t::ERROR,  fmt, ##args)
+//#if defined (__unix__)
+#define LOG_MSG(is_enabled, lvl, fmt, ...)		utils::debug::log_message(is_enabled, lvl, fmt, ## __VA_ARGS__)
+#define LOG_TRACE_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::TRACE,  fmt, ## __VA_ARGS__)
+#define LOG_DEBUG_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::DEBUG,  fmt, ## __VA_ARGS__)
+#define LOG_WARNING_MSG(is_enabled, fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::WARNING,fmt, ## __VA_ARGS__)
+#define LOG_INFO_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::INFO,   fmt, ## __VA_ARGS__)
+#define LOG_ERROR_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::ERRORt,  fmt, ## __VA_ARGS__)
 #define LOG_LINE(is_enabled)						LOG_TRACE_MSG(is_enabled, "%s() (%s:%d)", __PRETTY_FUNCTION__, __FILE__, __LINE__)
-#define LOG_MESSAGE(fmt, args...)					LOG_MSG(true, utils::debug::log_level_t::DEBUG, fmt, ##args)
+#define LOG_MESSAGE(fmt, ...)					LOG_MSG(true, utils::debug::log_level_t::EnumType::DEBUG, fmt, ## __VA_ARGS__)
 #define LOG_FUNC(is_enabled, e)						LOG_INFO_MSG(is_enabled, "< %s > %s", __PRETTY_FUNCTION__, e)
 #define DEBUG_ENTER_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_ENTER)
 #define DEBUG_LEAVE_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_LEAVE)
-#define DEBUG_ASSERT(is_enabled, condition, fmt, args...) LOG_ERROR_MSG((is_enabled) && !(condition), "ASSERT! (" #condition ") " fmt, ##args)
-#endif //__unix__
+#define DEBUG_ASSERT(is_enabled, condition, fmt, ...) LOG_ERROR_MSG((is_enabled) && !(condition), "ASSERT! (" #condition ") " fmt, ## __VA_ARGS__)
+//#endif //__unix__
 
 class log_writer
 {
