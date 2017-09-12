@@ -27,6 +27,7 @@ SOURCES +=	sources/logger.cpp \
 
 win32 {
     INCLUDEPATH += c:/local/boost_1_61_0
+    INCLUDEPATH += $(BOOST_ROOT)
 }
 
 CONFIG(debug, debug|release) {
