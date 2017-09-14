@@ -5,7 +5,7 @@ namespace sys {
 
 
 threading::threading()
-    : call_strand_(io_service_)
+    //: call_strand_(io_service_)
 {}
 
 bool threading::init()
@@ -29,6 +29,23 @@ void threading::stop()
 threading::~threading()
 {
     stop();
+}
+
+threading::strand_shared_type threading::getStrand(context ctx)
+{
+    map_context_type::const_iterator itFound = map_context_.find(ctx);
+    if(map_context_.end() == itFound)
+    {
+        strand_shared_type pStrand = boost::make_shared<boost::asio::strand>(io_service_);
+        if( pStrand )
+        {
+            map_context_[ ctx ] = pStrand;
+        }
+
+        return pStrand;
+    }
+
+    return itFound->second;
 }
 
 }
