@@ -1,5 +1,5 @@
 ﻿#include "support.hpp"
-
+#include <sstream>
 
 namespace utils {
 namespace support {

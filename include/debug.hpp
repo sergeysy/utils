@@ -107,12 +107,12 @@ namespace  debug {
 
 
 
-DECLARE_ENUM_5(log_level_t,
-               TRACE,     L"T",
-               DEBUG,     L"D",
-               WARNING,   L"W",
-               INFO,      L"I",
-               ERROR,     L"E")
+	DECLARE_ENUM_5(log_level_t,
+	TRACE, L"T",
+		DEBUG, L"D",
+		WARNING, L"W",
+		INFO, L"I",
+		ERROR, L"E");
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL log_level_t::TRACE

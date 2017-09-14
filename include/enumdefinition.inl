@@ -2,7 +2,7 @@
 #ifndef ENUM_DEFINITION__INL__1F640F79_5A1F_444F_97A9_BEA055A1CC0E
 #define ENUM_DEFINITION__INL__1F640F79_5A1F_444F_97A9_BEA055A1CC0E
 
-#include <formathelper.hpp>
+#include <FormatHelper.h>
 #include <stdexcept>
 #include <string>
 #include <map>

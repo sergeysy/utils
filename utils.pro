@@ -6,11 +6,18 @@ CONFIG += staticlib
 CONFIG += c++14
 
 INCLUDEPATH += "$$_PRO_FILE_PWD_/include"
+win32 {
+INCLUDEPATH += $(BOOST_ROOT)
+}
 
 TARGET = "$$LIBUTILS"
 
-HEADERS +=	include/logger.hpp \
-		include/formathelper.hpp \
+HEADERS +=	\
+		include/CPConvertor.h \
+		include/CPEnum.h \
+		include/logger.hpp \
+		include/FormatHelper.h \
+		include/Formatter.h \
 		include/enumdefinition.inl \
 		include/crc.hpp \
 		include/typedefines.hpp \
@@ -18,8 +25,12 @@ HEADERS +=	include/logger.hpp \
 		include/debug.hpp \
 		include/threading.hpp
 
-SOURCES +=	sources/logger.cpp \
-		sources/formathelper.cpp \
+SOURCES += \
+		sources/CPConverter.cpp \
+		include/Singleton.inl \
+		sources/logger.cpp \
+		sources/FormatHelper.cpp \
+		sources/Formatter.cpp \
 		sources/crc.cpp \
 		sources/support.cpp \
 		sources/debug.cpp \

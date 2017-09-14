@@ -1,7 +1,7 @@
 ﻿
 #include "debug.hpp"
 #include "support.hpp"
-#include "formathelper.hpp"
+#include "FormatHelper.h"
 #include "logger.hpp"
 #include <algorithm>
 #include <tuple>
@@ -33,7 +33,7 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
     std::wstring lvl_name = log_level_t::ToString(lvl);
 
     std::ostringstream ss;
-    ss << logger() << '[' << std::string(lvl_name.begin(), lvl_name.end()) << "] " << msg;
+    ss /*<< logger()*/ << '[' << std::string(lvl_name.begin(), lvl_name.end()) << "] " << msg;
 
     //std::cerr << ss.str() << std::endl;
 
