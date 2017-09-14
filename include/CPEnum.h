@@ -7,9 +7,16 @@
 #ifndef CP_ENUM__H__F0BE7289_62D2_41F5_A10D_40465F7A524F
 #define CP_ENUM__H__F0BE7289_62D2_41F5_A10D_40465F7A524F
 
-#include <Windows.h>
+#define CP_ACP                    0           // default to ANSI code page
+#define CP_OEMCP                  1           // default to OEM  code page
+#define CP_MACCP                  2           // default to MAC  code page
+#define CP_THREAD_ACP             3           // current thread's ANSI code page
+#define CP_SYMBOL                 42          // SYMBOL translations
 
-typedef enum
+#define CP_UTF7                   65000       // UTF-7 translation
+#define CP_UTF8                   65001       // UTF-8 translation
+
+enum
 {
     // --- Default code page constants:
     CodePage_Ansi = CP_ACP,         // ACP translation; ANSI

@@ -36,7 +36,7 @@ namespace Utils
         boost::wformat           m_wfmt;
     };
 
-#pragma region Special Overdriven Operators
+//#pragma region Special Overdriven Operators
     // Specify from what code page we want to convert string
     // WARNING: "^" priority is BELOW "%" priority
     std::pair<std::string, int> operator ^ (std::string const &str, int const setCodePage);
@@ -44,9 +44,9 @@ namespace Utils
     // Converts wstring to string in given code page
     std::string operator ^ (std::wstring const &wstr, int const toCodePage);
 
-#pragma endregion 
+//#pragma endregion
 
-#pragma region Formatter Implementation
+//#pragma region Formatter Implementation
     // constructors
     template <typename T> Formatter::Formatter(T const *msg, int const codePage) : m_codePage(codePage), m_wideState(0), m_fmt(msg->ToString()), m_wfmt(L"") {}
     template <typename T> Formatter::Formatter(T const &msg, int const codePage) : m_codePage(codePage), m_wideState(0), m_fmt(msg.ToString()), m_wfmt(L"") {}
@@ -81,10 +81,16 @@ namespace Utils
     template <typename T> Formatter& Formatter::operator %(T const *value)
     {
         if (value)
+        {
             if (m_wideState)
+            {
                 m_wfmt % Mb2Wc(value->ToString(), m_codePage);
+            }
             else
+            {
                 m_fmt % value->ToString();
+            }
+        }
         return *this;
     }
 
@@ -92,10 +98,12 @@ namespace Utils
     {
         T const *value_p = &value;
         if (value_p)
+        {
             if (m_wideState)
                 m_wfmt % Mb2Wc(value_p->ToString(), m_codePage);
             else
                 m_fmt % value_p->ToString();
+        }
         return *this;
     }
 
@@ -339,7 +347,7 @@ namespace Utils
 
         return *this;
     }
-#pragma endregion 
+//#pragma endregion
 
 } // namespace Utils
 

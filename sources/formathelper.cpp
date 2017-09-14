@@ -26,7 +26,8 @@ namespace FormatHelper
     std::string ReadArgs(char const *format, va_list &args)
     {
         std::vector<char> buffer(MAX_MESSAGE_LENGTH + 1);
-        ::vsprintf_s(&buffer.front(), buffer.size() - 1, format, args);
+        //::vsprintf_s(&buffer.front(), buffer.size() - 1, format, args);
+        ::vsnprintf(&buffer.front(), buffer.size() - 1, format, args);
 
         return &buffer.front();
     }
@@ -34,7 +35,8 @@ namespace FormatHelper
     std::wstring ReadArgs(wchar_t const *format, va_list &args)
     {
         std::vector<wchar_t> buffer(MAX_MESSAGE_LENGTH + 1);
-        ::vswprintf_s(&buffer.front(), buffer.size() - 1, format, args);
+        //::vswprintf_s(&buffer.front(), buffer.size() - 1, format, args);
+        ::vswprintf(&buffer.front(), buffer.size() - 1, format, args);
 
         return &buffer.front();
     }

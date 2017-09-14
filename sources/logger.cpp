@@ -2,6 +2,10 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <iomanip>
+#include <thread>
+#include <functional>
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
@@ -22,7 +26,7 @@
 #include <iomanip>
 
 #include "logger.hpp"
-
+*/
 std::ostream& operator<<(std::ostream& os, const logger& )
 {
     using namespace std::chrono;
@@ -41,7 +45,7 @@ std::ostream& operator<<(std::ostream& os, const logger& )
     return os;
 }
 
-*/
+
 namespace Utils
 {
 
@@ -53,9 +57,9 @@ namespace Utils
     {
         struct DATE
         {
-            WORD year;
-            WORD month;
-            WORD day;
+            uint16_t year;
+            uint16_t month;
+            uint16_t day;
 
             bool operator==(DATE const & obj) const;
             bool operator!=(DATE const & obj) const;
@@ -67,7 +71,7 @@ namespace Utils
             , m_importanceLevel(Importance_Normal)
             , m_dirPath(boost::filesystem::current_path() / L"logs")
 			, m_currentDate({})
-            , m_currentHandle(INVALID_HANDLE_VALUE)
+            //, m_currentHandle(INVALID_HANDLE_VALUE)
         {
             Start();
         }
@@ -90,14 +94,14 @@ namespace Utils
 
             if (!m_workThread.timed_join(boost::posix_time::seconds(2))) {
                 m_workThread.interrupt();
-                if (!m_workThread.timed_join(boost::posix_time::milliseconds(100))) {
+                /*if (!m_workThread.timed_join(boost::posix_time::milliseconds(100))) {
                     ::TerminateThread(m_workThread.native_handle(), 0);
-                }
+                }*/
             }
 
-            if (m_currentHandle != INVALID_HANDLE_VALUE) {
-                ::CloseHandle(m_currentHandle);
-                m_currentHandle = INVALID_HANDLE_VALUE;
+            if (m_fstream.is_open())
+            {
+                m_fstream.close();
             }
         }
 
@@ -153,10 +157,12 @@ namespace Utils
             if (importance < m_importanceLevel)
                 return;
 
-            SYSTEMTIME systemTime = { 0 };
-            ::GetSystemTime(&systemTime);
-            DWORD const process_id = ::GetCurrentProcessId();
-            DWORD const thread_id = ::GetCurrentThreadId();
+            /*SYSTEMTIME systemTime = { 0 };
+            ::GetSystemTime(&systemTime);*/
+            //uint32_t const process_id = ::GetCurrentProcessId();
+            //size_t const thread_id = std::hash<std::thread::id>(std::this_thread::get_id());//::GetCurrentThreadId();
+            std::stringstream osId;
+            osId<<std::this_thread::get_id();
 
             wchar_t type[2] = { L'\0', L'\0' };
             type[0] =
@@ -166,14 +172,27 @@ namespace Utils
                 severity == Severity_Debug   ? L'D' :
                 L'?';
 
-            std::wstring const logMsg = FormatHelper::Read(L"[%02d:%02d:%02d:%03d] [P:%d|T:%d] [%s] %s\r\n",
-                systemTime.wHour, systemTime.wMinute, systemTime.wSecond, systemTime.wMilliseconds,
-                process_id, thread_id, type, msg.c_str());
+            /**/
+            using namespace std::chrono;
+            high_resolution_clock::time_point p = high_resolution_clock::now();
+            milliseconds ms = duration_cast<milliseconds>(p.time_since_epoch());
+
+            seconds s = duration_cast<seconds>(ms);
+            std::time_t in_time_t = s.count();
+            std::size_t fractional_seconds = ms.count() % 1000;
+
+            std::stringstream os;
+            os << std::put_time(std::localtime(&in_time_t), "%X")<< "." << std::setw(3) << std::setfill('0') << fractional_seconds << " [" << std::this_thread::get_id() << "] ";
+            /**/
+            std::wstring const logMsg = FormatHelper::Read(L"[%s] [T:%s] [%s] %s\r\n",
+                os.str(),
+                /*process_id,*/ osId.str(), type, msg.c_str());
 
             DATE date;
-            date.day   = systemTime.wDay;
-            date.month = systemTime.wMonth;
-            date.year  = systemTime.wYear;
+            const auto tt = *localtime(&in_time_t);
+            date.day   = tt.tm_mday;
+            date.month = tt.tm_mon;
+            date.year  = tt.tm_year+1900;
             PushMessage(date, logMsg);
         }
 
@@ -230,10 +249,9 @@ namespace Utils
             { }
 
             // закрываем открытый файл
-            if (m_currentHandle != INVALID_HANDLE_VALUE)
+            if (m_fstream.is_open())
             {
-                ::CloseHandle(m_currentHandle);
-                m_currentHandle = INVALID_HANDLE_VALUE;
+                m_fstream.close();
             }
         }
 
@@ -249,12 +267,12 @@ namespace Utils
             DATE date = logMsgPair.first;
 
             // открываем или создаем файл
-            HANDLE hfile = GetLogFile(date);
-            if (hfile == INVALID_HANDLE_VALUE)
+            CreateOrOpenLogFile(date);
+            if (!m_fstream.is_open())
                 return;
 
             // записываем BOM в начало файла, если нужно
-            WriteBomIfNeed(hfile);
+            WriteBomIfNeed();
 
             // ---
             // процедура записи в файл лога
@@ -262,7 +280,7 @@ namespace Utils
             do                      // цикл записи сообщений в лог-файл
             {
                 // записываем сообщение в файл
-                if (!WriteMessage(hfile, logMsgPair.second))
+                if (!WriteMessage(logMsgPair.second))
                     break;
 
                 // удаляем первый элемент
@@ -288,7 +306,7 @@ namespace Utils
                 return;
 
             bool is_pushed = false;
-            for (int i = 0; i < MAX_LOGGER_SLEEP_TRY_COUNTS; ++i)
+            for (size_t i = 0; i < MAX_LOGGER_SLEEP_TRY_COUNTS; ++i)
             {
                 boost::recursive_mutex::scoped_lock queue_lock(m_msgQueueMutex);
                 if (m_msgQueue.size() <= MAX_LOGGER_QUEUE_SIZE)
@@ -299,7 +317,8 @@ namespace Utils
                 }
 
                 queue_lock.unlock();
-                ::Sleep(MAX_LOGGER_SLEEP_TIMEOUT_MS);
+                //::Sleep(MAX_LOGGER_SLEEP_TIMEOUT_MS);
+                std::this_thread::sleep_for( std::chrono::milliseconds(MAX_LOGGER_SLEEP_TIMEOUT_MS));
             }
 
             if (is_pushed)
@@ -330,36 +349,46 @@ namespace Utils
                 m_msgQueue.pop_front();
         }
 
-        void WriteBomIfNeed(HANDLE hfile) const
+        void WriteBomIfNeed() const
         {
-            LARGE_INTEGER fileSize = {};
+            /*LARGE_INTEGER fileSize = {};
             if (::GetFileSizeEx(hfile, &fileSize))                              // получаем размер файла
             {
                 if (fileSize.QuadPart == 0)                                     // если он пустой
                 {
-                    DWORD num = 0;
+                    uint32_t num = 0;
                     const unsigned char BomUtf8[3] = { 0xEF, 0xBB, 0xBF };      // определяем BOM(Byte Order Mark) для файлов в UTF-8 кодировке
                     ::WriteFile(hfile, BomUtf8, 3, &num, NULL);                 // записываем BOM UTF-8 в начало файла
+                }
+            }*/
+            const auto fileSize = m_fstream.tellg();
+            {
+                if(0 == fileSize)
+                {
+                    const std::vector<unsigned char> BomUtf8 = { 0xEF, 0xBB, 0xBF };
+                    //fstream << BomUtf8;
+                     std::copy(BomUtf8.begin(), BomUtf8.end(), std::ostream_iterator<char>(m_fstream, " "));
                 }
             }
         }
 
-        bool WriteMessage(HANDLE hfile, std::wstring const &message_text) const
+        bool WriteMessage(std::wstring const &message_text) const
         {
             // представляем сообщение в кодировке UTF-8
             std::string message_text_utf8 = CodePage::Wc2Mb(message_text, CodePage_Utf8);
 
+            /*
             // индикатор записи в конец файла
             OVERLAPPED ov = {};
-            ov.Offset = DWORD(-1);
-            ov.OffsetHigh = DWORD(-1);
+            ov.Offset = uint32_t(-1);
+            ov.OffsetHigh = uint32_t(-1);
 
-            DWORD err = ERROR_SUCCESS;
+            uint32_t err = ERROR_SUCCESS;
             char *buff = &message_text_utf8.front();
             size_t buff_size = message_text_utf8.size();
             do  // то записываем сообщение в конец файла пока не запишется целиком
             {
-                DWORD num = 0;
+                uint32_t num = 0;
                 err = ::WriteFile(hfile, buff, buff_size, &num, &ov) ? ERROR_SUCCESS : ::GetLastError();
                 if (err != ERROR_SUCCESS)
                     break;
@@ -367,18 +396,18 @@ namespace Utils
 				buff += static_cast<ptrdiff_t>(num);
                 buff_size -= (size_t)num;
             } while (buff_size > 0);
-
-            return err == ERROR_SUCCESS;
+            */
+            m_fstream << message_text_utf8;
+            return m_fstream?true:false;
         }
 
-        HANDLE GetLogFile(DATE const &date) const
+        void CreateOrOpenLogFile(DATE const &date) const
         {
-            if (m_currentHandle == INVALID_HANDLE_VALUE || date != m_currentDate)
+            if (!m_fstream.is_open() || date != m_currentDate)
             {
-                if (m_currentHandle != INVALID_HANDLE_VALUE)
+                if (m_fstream.is_open())
                 {
-                    ::CloseHandle(m_currentHandle);
-                    m_currentHandle = INVALID_HANDLE_VALUE;
+                    m_fstream.close();
                 }
 				
 				if (!boost::filesystem::exists(m_dirPath))
@@ -389,11 +418,11 @@ namespace Utils
 				std::wstring log_file_name = FormatHelper::Read(L"%04d-%02d-%02d.log", date.year, date.month, date.day);
                 boost::filesystem::path log_file_path = m_dirPath / log_file_name;
 
-                m_currentHandle = ::CreateFileW(log_file_path.wstring().c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+                m_fstream.open(log_file_path.string().c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
                 m_currentDate = date;
             }
 
-            return m_currentHandle;
+            //return std::move(m_fstream);
         }
 
     private:
@@ -401,7 +430,8 @@ namespace Utils
         Importance                  m_importanceLevel;
         boost::filesystem::path     m_dirPath;
         mutable DATE                m_currentDate;
-        mutable HANDLE              m_currentHandle;
+        //mutable HANDLE              m_currentHandle;
+        mutable std::fstream        m_fstream;
 
         mutable boost::thread       m_workThread;
         mutable boost::mutex        m_workThreadMutex;

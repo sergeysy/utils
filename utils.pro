@@ -13,6 +13,7 @@ INCLUDEPATH += $(BOOST_ROOT)
 TARGET = "$$LIBUTILS"
 
 HEADERS +=	\
+		include/Singleton.inl \
 		include/CPConvertor.h \
 		include/CPEnum.h \
 		include/logger.hpp \
@@ -27,7 +28,6 @@ HEADERS +=	\
 
 SOURCES += \
 		sources/CPConverter.cpp \
-		include/Singleton.inl \
 		sources/logger.cpp \
 		sources/FormatHelper.cpp \
 		sources/Formatter.cpp \
