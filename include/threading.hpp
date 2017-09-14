@@ -4,12 +4,21 @@
 #include <boost/thread.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
+#include <map>
 
 namespace sys {
 
 class threading
 {
     static constexpr std::size_t MAX_THREAD_COUNT = 15;
+
+public:
+
+    enum class context
+    {
+        reader,
+    };
+
 
 public:
 
@@ -22,15 +31,36 @@ public:
     template <typename CompletionHandler>
     void post(CompletionHandler handler)
     {
-        io_service_.post(call_strand_.wrap(handler));
+        //io_service_.post(call_strand_.wrap(handler));
+        io_service_.post( handler );
+    }
+
+    typedef boost::shared_ptr<boost::asio::strand>      strand_shared_type;
+    typedef std::map<context, strand_shared_type>       map_context_type;
+
+    template <typename CompletionHandler>
+    void post(context ctx, CompletionHandler handler)
+    {
+        strand_shared_type pStrand = getStrand(ctx);
+        if( !pStrand )
+        {
+            throw std::logic_error("Error getting strand.");
+        }
+
+        io_service_.post(pStrand->wrap(handler));
     }
 
 private:
 
+    strand_shared_type getStrand(context ctx);
+
     boost::asio::io_service								io_service_;
-    boost::asio::io_service::strand						call_strand_;
+    //boost::asio::io_service::strand						call_strand_;
     boost::scoped_ptr<boost::asio::io_service::work>	workptr_;
     boost::thread_group									threads_;
+
+    map_context_type                                    map_context_;
+
 };
 
 } // end namespace sys
