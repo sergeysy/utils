@@ -215,16 +215,16 @@ namespace Utils
         {
             try
             {
-                int const MaxFinishTryCount = 10;   // максимальное количество попыток выложить имеющуюся очередь сообщений в лог-файл
-                int finishTryCount = 0;             // счетчик попыток выложить имеющуюся очередь сообщений в лог-файл
+                int const MaxFinishTryCount = 10;   // РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРїС‹С‚РѕРє РІС‹Р»РѕР¶РёС‚СЊ РёРјРµСЋС‰СѓСЋСЃСЏ РѕС‡РµСЂРµРґСЊ СЃРѕРѕР±С‰РµРЅРёР№ РІ Р»РѕРі-С„Р°Р№Р»
+                int finishTryCount = 0;             // СЃС‡РµС‚С‡РёРє РїРѕРїС‹С‚РѕРє РІС‹Р»РѕР¶РёС‚СЊ РёРјРµСЋС‰СѓСЋСЃСЏ РѕС‡РµСЂРµРґСЊ СЃРѕРѕР±С‰РµРЅРёР№ РІ Р»РѕРі-С„Р°Р№Р»
                 bool running = true;
-                while (running)                     // цикл потока, обрабатываем запросы очереди пока не будет сигнала о прекращении
+                while (running)                     // С†РёРєР» РїРѕС‚РѕРєР°, РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј Р·Р°РїСЂРѕСЃС‹ РѕС‡РµСЂРµРґРё РїРѕРєР° РЅРµ Р±СѓРґРµС‚ СЃРёРіРЅР°Р»Р° Рѕ РїСЂРµРєСЂР°С‰РµРЅРёРё
                 {
                     boost::recursive_mutex::scoped_lock queue_lock(m_msgQueueMutex);
                     bool const is_empty = m_msgQueue.empty();
-                    queue_lock.unlock();    // снимаем блокировку
+                    queue_lock.unlock();    // СЃРЅРёРјР°РµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ
 
-                    //сомнения что это нужно
+                    //СЃРѕРјРЅРµРЅРёСЏ С‡С‚Рѕ СЌС‚Рѕ РЅСѓР¶РЅРѕ
                     //if (boost::this_thread::interruption_requested())
                     //    break;
 
@@ -236,11 +236,11 @@ namespace Utils
                         if (is_empty)
                         {
                             boost::mutex::scoped_lock lock(m_workThreadMutex);
-                            m_workThreadCondition.timed_wait(lock, boost::posix_time::seconds(3));    // ждем сигнала для продолжения
+                            m_workThreadCondition.timed_wait(lock, boost::posix_time::seconds(3));    // Р¶РґРµРј СЃРёРіРЅР°Р»Р° РґР»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ
                         }
                         else
                         {
-                            FlushMessagesToLogFile();       // запускаем цикл сброса сообщений в файл
+                            FlushMessagesToLogFile();       // Р·Р°РїСѓСЃРєР°РµРј С†РёРєР» СЃР±СЂРѕСЃР° СЃРѕРѕР±С‰РµРЅРёР№ РІ С„Р°Р№Р»
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace Utils
             catch(...)
             { }
 
-            // закрываем открытый файл
+            // Р·Р°РєСЂС‹РІР°РµРј РѕС‚РєСЂС‹С‚С‹Р№ С„Р°Р№Р»
             if (m_fstream.is_open())
             {
                 m_fstream.close();
@@ -259,41 +259,41 @@ namespace Utils
         {
             std::pair<DATE, std::wstring> logMsgPair;
 
-            // копируем первое сообщение в очереди
+            // РєРѕРїРёСЂСѓРµРј РїРµСЂРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ РІ РѕС‡РµСЂРµРґРё
             if (!GetFirstMessage(&logMsgPair))
                 return;
 
-            // запоминаем текущую дату сообщений, чтобы отслеживать сообщения именно для этого файла
+            // Р·Р°РїРѕРјРёРЅР°РµРј С‚РµРєСѓС‰СѓСЋ РґР°С‚Сѓ СЃРѕРѕР±С‰РµРЅРёР№, С‡С‚РѕР±С‹ РѕС‚СЃР»РµР¶РёРІР°С‚СЊ СЃРѕРѕР±С‰РµРЅРёСЏ РёРјРµРЅРЅРѕ РґР»СЏ СЌС‚РѕРіРѕ С„Р°Р№Р»Р°
             DATE date = logMsgPair.first;
 
-            // открываем или создаем файл
+            // РѕС‚РєСЂС‹РІР°РµРј РёР»Рё СЃРѕР·РґР°РµРј С„Р°Р№Р»
             CreateOrOpenLogFile(date);
             if (!m_fstream.is_open())
                 return;
 
-            // записываем BOM в начало файла, если нужно
+            // Р·Р°РїРёСЃС‹РІР°РµРј BOM РІ РЅР°С‡Р°Р»Рѕ С„Р°Р№Р»Р°, РµСЃР»Рё РЅСѓР¶РЅРѕ
             WriteBomIfNeed();
 
             // ---
-            // процедура записи в файл лога
-            //bool next = false;      // условие продолжения цикла
-            do                      // цикл записи сообщений в лог-файл
+            // РїСЂРѕС†РµРґСѓСЂР° Р·Р°РїРёСЃРё РІ С„Р°Р№Р» Р»РѕРіР°
+            //bool next = false;      // СѓСЃР»РѕРІРёРµ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ С†РёРєР»Р°
+            do                      // С†РёРєР» Р·Р°РїРёСЃРё СЃРѕРѕР±С‰РµРЅРёР№ РІ Р»РѕРі-С„Р°Р№Р»
             {
-                // записываем сообщение в файл
+                // Р·Р°РїРёСЃС‹РІР°РµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ С„Р°Р№Р»
                 if (!WriteMessage(logMsgPair.second))
                     break;
 
-                // удаляем первый элемент
+                // СѓРґР°Р»СЏРµРј РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚
                 PopFirstMessage();
 
-                // копируем первое сообщение в очереди
+                // РєРѕРїРёСЂСѓРµРј РїРµСЂРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ РІ РѕС‡РµСЂРµРґРё
                 if (!GetFirstMessage(&logMsgPair))
                     break;
 
-                // если дата сообщения совподает, то продолжаем. иначе - заканчиваем
+                // РµСЃР»Рё РґР°С‚Р° СЃРѕРѕР±С‰РµРЅРёСЏ СЃРѕРІРїРѕРґР°РµС‚, С‚Рѕ РїСЂРѕРґРѕР»Р¶Р°РµРј. РёРЅР°С‡Рµ - Р·Р°РєР°РЅС‡РёРІР°РµРј
                 //next = logMsgPair.first == date;
 
-                //все логи должны записаться
+                //РІСЃРµ Р»РѕРіРё РґРѕР»Р¶РЅС‹ Р·Р°РїРёСЃР°С‚СЊСЃСЏ
                 //if (boost::this_thread::interruption_requested())
                 //    break;
 
@@ -352,13 +352,13 @@ namespace Utils
         void WriteBomIfNeed() const
         {
             /*LARGE_INTEGER fileSize = {};
-            if (::GetFileSizeEx(hfile, &fileSize))                              // получаем размер файла
+            if (::GetFileSizeEx(hfile, &fileSize))                              // РїРѕР»СѓС‡Р°РµРј СЂР°Р·РјРµСЂ С„Р°Р№Р»Р°
             {
-                if (fileSize.QuadPart == 0)                                     // если он пустой
+                if (fileSize.QuadPart == 0)                                     // РµСЃР»Рё РѕРЅ РїСѓСЃС‚РѕР№
                 {
                     uint32_t num = 0;
-                    const unsigned char BomUtf8[3] = { 0xEF, 0xBB, 0xBF };      // определяем BOM(Byte Order Mark) для файлов в UTF-8 кодировке
-                    ::WriteFile(hfile, BomUtf8, 3, &num, NULL);                 // записываем BOM UTF-8 в начало файла
+                    const unsigned char BomUtf8[3] = { 0xEF, 0xBB, 0xBF };      // РѕРїСЂРµРґРµР»СЏРµРј BOM(Byte Order Mark) РґР»СЏ С„Р°Р№Р»РѕРІ РІ UTF-8 РєРѕРґРёСЂРѕРІРєРµ
+                    ::WriteFile(hfile, BomUtf8, 3, &num, NULL);                 // Р·Р°РїРёСЃС‹РІР°РµРј BOM UTF-8 РІ РЅР°С‡Р°Р»Рѕ С„Р°Р№Р»Р°
                 }
             }*/
             const auto fileSize = m_fstream.tellg();
@@ -374,11 +374,11 @@ namespace Utils
 
         bool WriteMessage(std::wstring const &message_text) const
         {
-            // представляем сообщение в кодировке UTF-8
+            // РїСЂРµРґСЃС‚Р°РІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ РєРѕРґРёСЂРѕРІРєРµ UTF-8
             std::string message_text_utf8 = CodePage::Wc2Mb(message_text, CodePage_Utf8);
 
             /*
-            // индикатор записи в конец файла
+            // РёРЅРґРёРєР°С‚РѕСЂ Р·Р°РїРёСЃРё РІ РєРѕРЅРµС† С„Р°Р№Р»Р°
             OVERLAPPED ov = {};
             ov.Offset = uint32_t(-1);
             ov.OffsetHigh = uint32_t(-1);
@@ -386,7 +386,7 @@ namespace Utils
             uint32_t err = ERROR_SUCCESS;
             char *buff = &message_text_utf8.front();
             size_t buff_size = message_text_utf8.size();
-            do  // то записываем сообщение в конец файла пока не запишется целиком
+            do  // С‚Рѕ Р·Р°РїРёСЃС‹РІР°РµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ РєРѕРЅРµС† С„Р°Р№Р»Р° РїРѕРєР° РЅРµ Р·Р°РїРёС€РµС‚СЃСЏ С†РµР»РёРєРѕРј
             {
                 uint32_t num = 0;
                 err = ::WriteFile(hfile, buff, buff_size, &num, &ov) ? ERROR_SUCCESS : ::GetLastError();
@@ -398,6 +398,8 @@ namespace Utils
             } while (buff_size > 0);
             */
             m_fstream << message_text_utf8;
+            std::wcerr<<L"message_text_utf8(length"<<message_text_utf8.length()<<"):"<<message_text<<std::endl;
+            m_fstream.flush();
             return m_fstream?true:false;
         }
 
