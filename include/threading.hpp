@@ -50,6 +50,11 @@ public:
         io_service_.post(pStrand->wrap(handler));
     }
 
+    // 2017-09-18 09:12
+    // Incapsulation principle violation!
+    // TODO: To do refactoring later.
+    boost::asio::io_service& get_io_service();
+
 private:
 
     strand_shared_type getStrand(context ctx);
