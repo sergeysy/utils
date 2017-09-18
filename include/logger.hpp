@@ -13,6 +13,7 @@
 class logger {
 public:
     friend std::ostream& operator<<(std::ostream& os, const logger& dt);
+    friend std::wostream& operator<<(std::wostream& os, const logger& dt);
 };
 
 namespace Utils
