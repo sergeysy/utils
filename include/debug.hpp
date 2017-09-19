@@ -116,7 +116,7 @@ DECLARE_ENUM_5(log_level_t,
                DEBUG, L"D",
                WARNING, L"W",
                INFO, L"I",
-               ERROR, L"E");
+               ERR, L"E");
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL log_level_t::TRACE
@@ -132,7 +132,7 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
 #define LOG_DEBUG_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::DEBUG,  fmt, ## __VA_ARGS__)
 #define LOG_WARNING_MSG(is_enabled, fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::WARNING,fmt, ## __VA_ARGS__)
 #define LOG_INFO_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::INFO,   fmt, ## __VA_ARGS__)
-#define LOG_ERROR_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::ERROR,  fmt, ## __VA_ARGS__)
+#define LOG_ERROR_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::ERR,  fmt, ## __VA_ARGS__)
 #define LOG_LINE(is_enabled)						LOG_TRACE_MSG(is_enabled, "%s() (%s:%d)", FUNCTION_NAME, __FILE__, __LINE__)
 #define LOG_MESSAGE(fmt, ...)					LOG_MSG(true, utils::debug::log_level_t::EnumType::DEBUG, fmt, ## __VA_ARGS__)
 #define LOG_FUNC(is_enabled, e)						LOG_INFO_MSG(is_enabled, "< %s > %s", FUNCTION_NAME, e)
