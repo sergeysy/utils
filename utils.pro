@@ -1,6 +1,6 @@
 TEMPLATE = lib
 
-QT -= core gui
+QT -= gui
 
 CONFIG += staticlib
 CONFIG += c++14
