@@ -48,4 +48,10 @@ threading::strand_shared_type threading::getStrand(context ctx)
     return itFound->second;
 }
 
+boost::asio::io_service& threading::get_io_service()
+{
+    return io_service_;
+}
+
+
 }

@@ -103,16 +103,20 @@ namespace utils {
 
 #ifdef DEBUG_ON
 
+#ifdef _WINDOWS
+#define FUNCTION_NAME	__FUNCSIG__
+#elif __linux__
+#define FUNCTION_NAME	__PRETTY_FUNCTION__
+#endif
+
 namespace  debug {
 
-
-
-	DECLARE_ENUM_5(log_level_t,
-	TRACE, L"T",
-		DEBUG, L"D",
-		WARNING, L"W",
-		INFO, L"I",
-		ERRORt, L"E");
+DECLARE_ENUM_5(log_level_t,
+               TRACE, L"T",
+               DEBUG, L"D",
+               WARNING, L"W",
+               INFO, L"I",
+               ERR, L"E");
 
 #ifndef LOG_LEVEL
 #define LOG_LEVEL log_level_t::TRACE
@@ -128,10 +132,10 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
 #define LOG_DEBUG_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::DEBUG,  fmt, ## __VA_ARGS__)
 #define LOG_WARNING_MSG(is_enabled, fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::WARNING,fmt, ## __VA_ARGS__)
 #define LOG_INFO_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::INFO,   fmt, ## __VA_ARGS__)
-#define LOG_ERROR_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::ERRORt,  fmt, ## __VA_ARGS__)
-#define LOG_LINE(is_enabled)						LOG_TRACE_MSG(is_enabled, "%s() (%s:%d)", __PRETTY_FUNCTION__, __FILE__, __LINE__)
+#define LOG_ERROR_MSG(is_enabled,	fmt, ...)	LOG_MSG(is_enabled, utils::debug::log_level_t::EnumType::ERR,  fmt, ## __VA_ARGS__)
+#define LOG_LINE(is_enabled)						LOG_TRACE_MSG(is_enabled, "%s() (%s:%d)", FUNCTION_NAME, __FILE__, __LINE__)
 #define LOG_MESSAGE(fmt, ...)					LOG_MSG(true, utils::debug::log_level_t::EnumType::DEBUG, fmt, ## __VA_ARGS__)
-#define LOG_FUNC(is_enabled, e)						LOG_INFO_MSG(is_enabled, "< %s > %s", __PRETTY_FUNCTION__, e)
+#define LOG_FUNC(is_enabled, e)						LOG_INFO_MSG(is_enabled, "< %s > %s", FUNCTION_NAME, e)
 #define DEBUG_ENTER_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_ENTER)
 #define DEBUG_LEAVE_FUNC(is_enabled)				LOG_FUNC(is_enabled, utils::debug::EVENT_LEAVE)
 #define DEBUG_ASSERT(is_enabled, condition, fmt, ...) LOG_ERROR_MSG((is_enabled) && !(condition), "ASSERT! (" #condition ") " fmt, ## __VA_ARGS__)

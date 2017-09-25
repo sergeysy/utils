@@ -33,9 +33,7 @@ void log_message(bool is_subsys_enabled, log_level_t::EnumType lvl, const char* 
     std::wstring lvl_name = log_level_t::ToString(lvl);
 
     std::ostringstream ss;
-    ss /*<< logger()*/ << '[' << std::string(lvl_name.begin(), lvl_name.end()) << "] " << msg;
-
-    //std::cerr << ss.str() << std::endl;
+    ss << logger() << '[' << std::string(lvl_name.begin(), lvl_name.end()) << "] " << msg;
 
     // 2017-09-08 16:34
     // put in my own logger

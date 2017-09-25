@@ -2,6 +2,9 @@
 
 #include <exception>
 #include <stdexcept>
+
+#include <QString>
+
 #include "FormatHelper.h"
 
 namespace CodePage
@@ -161,7 +164,11 @@ namespace CodePage
         *mb_bin = buffer;
         return ERROR_SUCCESS;*/
         //TODO convert wchar_t to char
-        (*mb_bin).assign(wc_bin.cbegin(), wc_bin.cend());
+        //(*mb_bin).assign(wc_bin.cbegin(), wc_bin.cend());
+
+        const auto raw = QString::fromWCharArray(wc_bin.data()).toStdString();
+        mb_bin->assign(raw.data(), raw.data()+raw.size());
+
         return ERROR_SUCCESS;
     }
 
@@ -198,7 +205,12 @@ namespace CodePage
         *wc_bin = buffer;
         return ERROR_SUCCESS;*/
         //TODO convert wchar_t to char
-        wc_bin->assign(mb_bin.cbegin(), mb_bin.cend());
+        //wc_bin->assign(mb_bin.cbegin(), mb_bin.cend());
+        const auto raw = QString::fromStdString(std::string(mb_bin.data(), mb_bin.size()));
+        const auto length = raw.toWCharArray(nullptr);
+        wc_bin->resize(length);
+        raw.toWCharArray(wc_bin->data());
+
         return ERROR_SUCCESS;
     }
 
