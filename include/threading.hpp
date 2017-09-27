@@ -17,6 +17,8 @@ public:
     enum class context
     {
         reader,
+        barcode,
+
     };
 
 
