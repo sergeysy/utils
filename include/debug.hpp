@@ -163,17 +163,17 @@ private:
 
 #else // ifndef DEBUG_ON
 
-#define LOG_MSG(is_enabled, lvl, fmt, args...)		((void)0)
-#define LOG_TRACE_MSG(is_enabled, fmt, args...)		((void)0)
-#define LOG_DEBUG_MSG(is_enabled, fmt, args...)		((void)0)
-#define LOG_WARNING_MSG(is_enabled, fmt, args...)	((void)0)
-#define LOG_INFO_MSG(is_enabled, fmt, args...)		((void)0)
-#define LOG_ERROR_MSG(is_enabled, fmt, args...)		((void)0)
+#define LOG_MSG(is_enabled, lvl, fmt, ...)		((void)0)
+#define LOG_TRACE_MSG(is_enabled, fmt, ...)		((void)0)
+#define LOG_DEBUG_MSG(is_enabled, fmt, ...)		((void)0)
+#define LOG_WARNING_MSG(is_enabled, fmt, ...)	((void)0)
+#define LOG_INFO_MSG(is_enabled, fmt, ...)		((void)0)
+#define LOG_ERROR_MSG(is_enabled, fmt, ...)		((void)0)
 #define LOG_LINE(is_enabled)						((void)0)
-#define LOG_MESSAGE(fmt, args...)					((void)0)
+#define LOG_MESSAGE(fmt, ...)					((void)0)
 #define DEBUG_ENTER_FUNC(is_enabled)				((void)0)
 #define DEBUG_LEAVE_FUNC(is_enabled)				((void)0)
-#define DEBUG_ASSERT(condition, fmt, args...)		((void)0)
+#define DEBUG_ASSERT(condition, fmt, ...)		((void)0)
 
 #endif
 
