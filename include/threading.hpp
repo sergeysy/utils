@@ -18,7 +18,7 @@ public:
     {
         reader,
         barcode,
-
+        gate,
     };
 
 
