@@ -19,6 +19,7 @@ public:
         reader,
         barcode,
         gate,
+        gprs,
     };
 
 
