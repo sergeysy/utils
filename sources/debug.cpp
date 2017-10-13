@@ -7,7 +7,6 @@
 #include <tuple>
 #include <boost/date_time.hpp>
 
-#define BOOST_FILESYSTEM_VERSION 3
 #include <boost/filesystem.hpp>
 
 #include <ostream>
