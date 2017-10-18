@@ -47,7 +47,8 @@ log_writer::log_writer()
     std::string input_dir(std::string(MAINDIR) + std::string(LOGS));
     boost::filesystem::path out_path = boost::filesystem::complete(input_dir);
 
-    try
+#if defined(unix)
+	try
     {
         if( !boost::filesystem::exists(out_path) )
             boost::filesystem::create_directories(out_path);
@@ -56,7 +57,7 @@ log_writer::log_writer()
     {
 
     }
-
+#endif
     std::ostringstream oss;
     oss.imbue(plocale);
     oss << now << ".log";
