@@ -1,4 +1,5 @@
 Makefile
+Makefile.utils
 /x64*
 *.vcxproj*
 /Win32*

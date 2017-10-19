@@ -14,7 +14,7 @@ TARGET = "$$LIBUTILS"
 
 HEADERS +=	\
 		include/Singleton.inl \
-		include/CPConvertor.h \
+                include/CPConverter.h \
 		include/CPEnum.h \
 		include/logger.hpp \
 		include/FormatHelper.h \
@@ -29,7 +29,7 @@ HEADERS +=	\
 SOURCES += \
 		sources/CPConverter.cpp \
 		sources/logger.cpp \
-		sources/FormatHelper.cpp \
+                sources/formathelper.cpp \
 		sources/Formatter.cpp \
 		sources/crc.cpp \
 		sources/support.cpp \

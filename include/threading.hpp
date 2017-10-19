@@ -1,10 +1,11 @@
 ﻿#pragma once
+#include <map>
+#include <memory>
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
-#include <map>
 
 namespace sys {
 
@@ -38,7 +39,7 @@ public:
         io_service_.post( handler );
     }
 
-    typedef boost::shared_ptr<boost::asio::strand>      strand_shared_type;
+    typedef std::shared_ptr<boost::asio::strand>      strand_shared_type;
     typedef std::map<context, strand_shared_type>       map_context_type;
 
     template <typename CompletionHandler>

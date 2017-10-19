@@ -36,7 +36,7 @@ threading::strand_shared_type threading::getStrand(context ctx)
     map_context_type::const_iterator itFound = map_context_.find(ctx);
     if(map_context_.end() == itFound)
     {
-        strand_shared_type pStrand = boost::make_shared<boost::asio::strand>(io_service_);
+        strand_shared_type pStrand = std::make_shared<boost::asio::strand>(io_service_);
         if( pStrand )
         {
             map_context_[ ctx ] = pStrand;

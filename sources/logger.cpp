@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <thread>
 #include <functional>
+#include <fstream>
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
