@@ -7,6 +7,7 @@
 
 
 namespace utils {
+
 namespace support {
 
 // convert dec to bcd representation:
