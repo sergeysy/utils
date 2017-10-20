@@ -24,8 +24,7 @@ HEADERS +=	\
 		include/typedefines.hpp \
 		include/support.hpp \
 		include/debug.hpp \
-		include/threading.hpp \
-    include/functor.hpp
+		include/threading.hpp
 
 SOURCES += \
 		sources/CPConverter.cpp \
