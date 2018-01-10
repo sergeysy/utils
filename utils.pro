@@ -47,7 +47,7 @@ CONFIG(debug, debug|release) {
 } else {
     CONFIGURATION=release
 }
-DESTDIR = "$$ROOT_DIR/build/$$CONFIGURATION/$$TARGET"
+DESTDIR = "$$ROOT_DIR/$$BUILD_MV3000_DIR/$$CONFIGURATION/$$TARGET"
 
 OBJECTS_DIR = \""$$DESTDIR/.obj\""
 
