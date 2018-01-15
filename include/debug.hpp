@@ -54,6 +54,10 @@
 #define		LOG_GPRS			NO
 #endif
 
+#ifndef LOG_NMEA_ON
+#define		LOG_NMEA_ON			NO
+#endif
+
 #ifndef LOG_HTTP
 #define		LOG_HTTP			NO
 #endif

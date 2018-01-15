@@ -20,9 +20,8 @@ public:
         reader,
         barcode,
         gate,
-//        gprs,
+        nmea
     };
-
 
 public:
 

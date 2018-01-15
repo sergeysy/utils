@@ -38,7 +38,7 @@ u08 bcd2dec(u08 ch)
 
 std::string buf_to_hex(const u08* buf, size_t len, bool uppercase /* = true */)
 {
-    return to_hex_str(buf, buf + len, true, uppercase);
+    return to_hex_str(buf, buf + len, uppercase, true);
 }
 
 std::string buf_to_str(const u08* buf, size_t len)
