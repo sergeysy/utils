@@ -3,7 +3,10 @@
 #include <exception>
 #include <stdexcept>
 
-#include <QString>
+//#include <QString>
+#include <locale>
+#include <codecvt>
+#include <string>
 
 #include "FormatHelper.h"
 
@@ -144,30 +147,11 @@ namespace CodePage
             return ERROR_SUCCESS;
         }
 
-        /*int len = ::WideCharToMultiByte(code_page, 0, &wc_bin.front(), wc_bin.size(), 0, 0, 0, 0);
-        uint32_t err = len != 0 ? ERROR_SUCCESS : ::GetLastError();
-        if (err != ERROR_SUCCESS)
-        {
-            return err;
-        }
-
-        std::vector<char> buffer(len + 1);
-
-        int size = ::WideCharToMultiByte(code_page, 0, &wc_bin.front(), wc_bin.size(), &buffer.front(), buffer.size(), 0, 0);
-        err = size != 0 ? ERROR_SUCCESS : ::GetLastError();
-        if (err != ERROR_SUCCESS)
-        {
-            return err;
-        }
-
-        buffer.resize(size);
-        *mb_bin = buffer;
-        return ERROR_SUCCESS;*/
-        //TODO convert wchar_t to char
-        //(*mb_bin).assign(wc_bin.cbegin(), wc_bin.cend());
-
-        const auto raw = QString::fromWCharArray(wc_bin.data()).toStdString();
-        mb_bin->assign(raw.data(), raw.data()+raw.size());
+        /*const auto raw = QString::fromWCharArray(wc_bin.data()).toStdString();
+        mb_bin->assign(raw.data(), raw.data()+raw.size());*/
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        const auto tmp = converter.to_bytes(std::wstring(wc_bin.cbegin(), wc_bin.cend()));
+        mb_bin->assign(tmp.cbegin(), tmp.cend());
 
         return ERROR_SUCCESS;
     }
@@ -185,31 +169,13 @@ namespace CodePage
             return ERROR_SUCCESS;
         }
 
-        /*int len = ::MultiByteToWideChar(code_page, 0, &mb_bin.front(), mb_bin.size(), 0, 0);
-        uint32_t err = len != 0 ? ERROR_SUCCESS : ::GetLastError();
-        if (err != ERROR_SUCCESS)
-        {
-            return err;
-        }
-
-        std::vector<wchar_t> buffer(len + 1);
-
-        int size = ::MultiByteToWideChar(code_page, 0, &mb_bin.front(), mb_bin.size(), &buffer.front(), buffer.size());
-        err = size != 0 ? ERROR_SUCCESS : ::GetLastError();
-        if (err != ERROR_SUCCESS)
-        {
-            return err;
-        }
-
-        buffer.resize(size);
-        *wc_bin = buffer;
-        return ERROR_SUCCESS;*/
-        //TODO convert wchar_t to char
-        //wc_bin->assign(mb_bin.cbegin(), mb_bin.cend());
-        const auto raw = QString::fromStdString(std::string(mb_bin.data(), mb_bin.size()));
+        /*const auto raw = QString::fromStdString(std::string(mb_bin.data(), mb_bin.size()));
         const auto length = raw.toWCharArray(nullptr);
         wc_bin->resize(length);
-        raw.toWCharArray(wc_bin->data());
+        raw.toWCharArray(wc_bin->data());*/
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        const auto tmp = converter.from_bytes(std::string(mb_bin.cbegin(), mb_bin.cend()));
+        *wc_bin = std::move(std::vector<wchar_t>(tmp.cbegin(), tmp.cend()));
 
         return ERROR_SUCCESS;
     }
