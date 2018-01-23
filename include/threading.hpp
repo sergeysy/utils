@@ -1,12 +1,43 @@
 ﻿#pragma once
 #include <map>
 #include <memory>
+#include <thread>
+#include <chrono>
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/function.hpp>
 
+class async_call
+{
+public:
+    template <class callable, class... arguments>
+    async_call(int after, bool async,  callable&& f, arguments&&... args)
+    {
+        std::function<typename std::result_of<callable(arguments...)>::type()> task(std::bind(std::forward<callable>(f), std::forward<arguments>(args)...));
+
+        if (async)
+        {
+            std::thread([after, task]() {
+                            if( after > 0 )
+                            {
+                                std::this_thread::sleep_for(std::chrono::milliseconds(after));
+                            }
+                task();
+            }).detach();
+        }
+        else
+        {
+            if( after > 0 )
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(after));
+            }
+            task();
+        }
+    }
+
+};
 namespace sys {
 
 class threading
