@@ -29,77 +29,42 @@
 #define		YES					true
 #define		NO					false
 
-#ifndef LOG_APP_ON
+#ifndef     LOG_APP_ON
 #define		LOG_APP_ON			YES
 #endif
 
 #ifndef     LOG_TICKET_ON
-#define		LOG_TICKET_ON       YES
+#define		LOG_TICKET_ON       NO
 #endif
 
 #ifndef     LOG_READER_ON
-#define		LOG_READER_ON		YES
+#define		LOG_READER_ON		NO
 #endif
 
-
-#ifndef LOG_READER_BANK
-#define		LOG_READER_BANK		NO
+#ifndef     LOG_BARCODE_ON
+#define     LOG_BARCODE_ON		NO
 #endif
 
-#ifndef LOG_BARCODE_ON
-#define LOG_BARCODE_ON			YES
+#ifndef     LOG_GPRS
+#define     LOG_GPRS			NO
 #endif
 
-#ifndef LOG_GPRS
-#define		LOG_GPRS			NO
+#ifndef     LOG_NMEA_ON
+#define     LOG_NMEA_ON			NO
 #endif
 
-#ifndef LOG_NMEA_ON
-#define		LOG_NMEA_ON			NO
+#ifndef     LOG_COM
+#define     LOG_COM				NO
 #endif
 
-#ifndef LOG_HTTP
-#define		LOG_HTTP			NO
+#ifndef     LOG_GATE
+#define     LOG_GATE            NO
 #endif
 
-#ifndef LOG_HTTP_RBWIL
-#define		LOG_HTTP_RBWIL		NO
+#ifndef     LOG_SAM
+#define     LOG_SAM             NO
 #endif
 
-#ifndef LOG_HTTP_SEND_TRAN
-#define		LOG_HTTP_SEND_TRAN	NO
-#endif
-
-#ifndef LOG_TRANSACT
-#define		LOG_TRANSACT		NO
-#endif
-
-#ifndef LOG_LOCALE
-#define		LOG_LOCALE			NO
-#endif
-
-//#define LOG_DIAGNOSTIC		NO
-#define LOG_TICKET				NO
-//#define LOG_SUV_WORK			NO
-
-#ifndef LOG_COM
-#define LOG_COM					NO
-#endif
-
-//#define LOG_TRANSPORT_LAY		NO
-//#define LOG_TRANSACTION		NO
-
-#ifndef LOG_REFERENCE
-#define LOG_REFERENCE			NO
-#endif
-
-#ifndef LOG_GATE
-#define LOG_GATE				NO
-#endif
-
-//#define LOG_GPS				NO
-//#define LOG_MFP				NO
-//#define LOG_SAM				NO
 #endif
 
 
