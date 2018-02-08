@@ -45,6 +45,10 @@
 #define     LOG_BARCODE_ON		NO
 #endif
 
+#ifndef     LOG_READER_BANK
+#define     LOG_READER_BANK		NO
+#endif
+
 #ifndef     LOG_GPRS
 #define     LOG_GPRS			NO
 #endif
