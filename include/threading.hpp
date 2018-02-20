@@ -60,7 +60,6 @@ public:
     ~threading();
 
     bool init();
-    void stop();
 
     template <typename CompletionHandler>
     void post(CompletionHandler handler)
@@ -90,6 +89,7 @@ public:
     boost::asio::io_service& get_io_service();
 
 private:
+    void stop();
 
     strand_shared_type getStrand(context ctx);
 
